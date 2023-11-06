@@ -14,6 +14,7 @@ import (
 func main() {
 
 	addr := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
+	host := os.Getenv("POSTGRES_HOST")
 	dbUser := os.Getenv("POSTGRES_USER")
 	dbPassword := os.Getenv("POSTGRES_PASSWORD")
 	dbName := os.Getenv("POSTGRES_DB")
@@ -21,16 +22,15 @@ func main() {
 
 	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
-	database, err := db.NewDbService(dbUser, dbPassword, dbName, dbPort)
+	database, err := db.NewDbService(host, dbUser, dbPassword, dbName, dbPort)
 	if err != nil {
-		log.Printf("error %v", err)
 		log.Fatalf("Could not set up database: %v", err)
 	}
 	defer database.GetConnection().Close()
 
 	dinoService := app.NewDinoService(database)
 
-	handler := app.New(dinoService, &logger)
+	handler := app.NewHandler(dinoService, &logger)
 	err = http.ListenAndServe(addr, handler)
 	if err != nil {
 		log.Fatalf("Could start app: %v", err)

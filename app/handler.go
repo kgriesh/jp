@@ -14,10 +14,10 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func New(dinoService DinoService, logger *zerolog.Logger) http.Handler {
+func NewHandler(dinoService DinoService, logger *zerolog.Logger) http.Handler {
 
 	router := chi.NewRouter()
-	router.Route("/", func(r chi.Router) {
+	router.Route("/v1/", func(r chi.Router) {
 		r.Get("/dinosaurs", getDinosHttp(dinoService, logger))
 		r.Get("/dinosaurs/cage/{cageId}", getDinosByCageHttp(dinoService, logger))
 		r.Get("/dinosaur/{dinoId}", getDinoHttp(dinoService, logger))
@@ -31,6 +31,7 @@ func New(dinoService DinoService, logger *zerolog.Logger) http.Handler {
 	return router
 }
 
+// getDinosHttp gets all dinosaurs and returns result as json
 func getDinosHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		dinos, err := dinoService.GetDinos(r.Context())
@@ -53,6 +54,7 @@ func getDinosHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.R
 	}
 }
 
+// getDinosByCageHttp gets all dinosaurs by cageId and returns result as json
 func getDinosByCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cageId, _ := url.PathUnescape(chi.URLParam(r, "cageId"))
@@ -93,6 +95,7 @@ func getDinosByCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w 
 	}
 }
 
+// getDinoHttp gets all dinosaurs by cageId and returns result as json
 func getDinoHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		dinoId, _ := url.PathUnescape(chi.URLParam(r, "dinoId"))
@@ -133,12 +136,13 @@ func getDinoHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.Re
 	}
 }
 
+// getCageHttp gets cage by cageId and returns result as json
 func getCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cageId, _ := url.PathUnescape(chi.URLParam(r, "cageId"))
 		id, err := strconv.ParseInt(cageId, 10, 64)
 		if err != nil {
-			logger.Error().Err(err).Msg("error getting cage")
+			logger.Error().Err(err).Msg("error parsing cageId")
 			err := render.Render(w, r, BadRequest(err))
 			if err != nil {
 				logger.Error().Err(err).Msg("render error")
@@ -173,6 +177,7 @@ func getCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.Re
 	}
 }
 
+// addDinoHttp adds a new dino to the db
 func addDinoHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -189,7 +194,7 @@ func addDinoHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.Re
 		dino := Dinosaur{}
 		err = json.Unmarshal(body, &dino)
 		if err != nil {
-			logger.Error().Err(err).Msg("error reading request data into cage struct")
+			logger.Error().Err(err).Msg("error reading request data into dino struct")
 			err := render.Render(w, r, BadRequest(err))
 			if err != nil {
 				logger.Error().Err(err).Msg("render error")
@@ -226,6 +231,7 @@ func addDinoHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.Re
 	}
 }
 
+// addCageHttp adds a new cage to the db
 func addCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -280,6 +286,7 @@ func addCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.Re
 	}
 }
 
+// getCagesHttp gets all cages and returns result as json
 func getCagesHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cages, err := dinoService.GetCages(r.Context())
@@ -303,12 +310,13 @@ func getCagesHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.R
 	}
 }
 
+// updateCageHttp updates a cage by cageId
 func updateCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cageId, _ := url.PathUnescape(chi.URLParam(r, "cageId"))
 		id, err := strconv.ParseInt(cageId, 10, 64)
 		if err != nil {
-			logger.Error().Err(err).Msg("error updating cage")
+			logger.Error().Err(err).Msg("error parsing cageId")
 			err := render.Render(w, r, BadRequest(err))
 			if err != nil {
 				logger.Error().Err(err).Msg("render error")
@@ -368,12 +376,13 @@ func updateCageHttp(dinoService DinoService, logger *zerolog.Logger) func(w http
 	}
 }
 
+// updateDinoHttp updates a dino by id
 func updateDinoHttp(dinoService DinoService, logger *zerolog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		dinoId, _ := url.PathUnescape(chi.URLParam(r, "dinoId"))
 		id, err := strconv.ParseInt(dinoId, 10, 64)
 		if err != nil {
-			logger.Error().Err(err).Msg("error updating dino")
+			logger.Error().Err(err).Msg("error parsing dinoId")
 			err := render.Render(w, r, BadRequest(err))
 			if err != nil {
 				logger.Error().Err(err).Msg("render error")
@@ -395,7 +404,7 @@ func updateDinoHttp(dinoService DinoService, logger *zerolog.Logger) func(w http
 		dino := Dinosaur{}
 		err = json.Unmarshal(body, &dino)
 		if err != nil {
-			logger.Error().Err(err).Msg("error reading request data into cage struct")
+			logger.Error().Err(err).Msg("error reading request data into dino struct")
 			err := render.Render(w, r, BadRequest(err))
 			if err != nil {
 				logger.Error().Err(err).Msg("render error")

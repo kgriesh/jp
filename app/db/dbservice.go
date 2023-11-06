@@ -8,10 +8,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	HOST = "database"
-)
-
 type DbService interface {
 	GetConnection() *sql.DB
 }
@@ -24,10 +20,10 @@ func (db Database) GetConnection() *sql.DB {
 	return db.Conn
 }
 
-func NewDbService(username, password, database, port string) (DbService, error) {
+func NewDbService(host, username, password, database, port string) (DbService, error) {
 	db := Database{}
 	ds := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		HOST, port, username, password, database)
+		host, port, username, password, database)
 	conn, err := sql.Open("postgres", ds)
 	if err != nil {
 		return db, err

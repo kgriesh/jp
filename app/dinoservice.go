@@ -38,7 +38,10 @@ func NewDinoService(db db.DbService) dinoServiceImpl {
 // GetDinos get all dinos regardless of cage
 func (s dinoServiceImpl) GetDinos(ctx context.Context) ([]Dinosaur, error) {
 	dinos := []Dinosaur{}
-	rows, err := s.dbService.GetConnection().QueryContext(ctx, "SELECT id, dino_name, dino_species, cage_id FROM dinosaur ORDER BY ID ASC")
+	rows, err := s.
+		dbService.
+		GetConnection().
+		QueryContext(ctx, "SELECT id, dino_name, dino_species, cage_id FROM dinosaur ORDER BY ID ASC")
 	if err != nil {
 		return dinos, err
 	}
@@ -78,7 +81,10 @@ func (s dinoServiceImpl) GetCageById(ctx context.Context, cageId int64) (Cage, e
 // GetDinosByCage get all dinos in a cage
 func (s dinoServiceImpl) GetDinosByCage(ctx context.Context, cageId int64) ([]Dinosaur, error) {
 	dinos := []Dinosaur{}
-	rows, err := s.dbService.GetConnection().QueryContext(ctx, "SELECT id, dino_name, dino_species, cage_id FROM dinosaur where cage_id = $1", cageId)
+	rows, err := s.
+		dbService.
+		GetConnection().
+		QueryContext(ctx, "SELECT id, dino_name, dino_species, cage_id FROM dinosaur where cage_id = $1", cageId)
 	if err != nil {
 		return dinos, err
 	}
@@ -243,7 +249,10 @@ func (s dinoServiceImpl) UpdateCage(ctx context.Context, cage Cage) error {
 // GetCages get all cages
 func (s dinoServiceImpl) GetCages(ctx context.Context) ([]Cage, error) {
 	cages := []Cage{}
-	rows, err := s.dbService.GetConnection().QueryContext(ctx, "SELECT id, cage_name, cage_status FROM cage")
+	rows, err := s.
+		dbService.
+		GetConnection().
+		QueryContext(ctx, "SELECT id, cage_name, cage_status FROM cage")
 	if err != nil {
 		return cages, err
 	}

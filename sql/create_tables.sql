@@ -13,3 +13,34 @@ CREATE TABLE IF NOT EXISTS cage (
 );
 
 ALTER TABLE dinosaur ADD FOREIGN KEY ("cage_id") REFERENCES cage ("id");
+
+
+-- seed data
+INSERT INTO cage
+    (cage_name, cage_status)
+VALUES
+    ('Cage One', 'ACTIVE');
+INSERT INTO cage
+    (cage_name, cage_status)
+VALUES
+    ('Cage Two', 'ACTIVE');   
+INSERT INTO dinosaur
+    (dino_name, dino_species, cage_id)
+VALUES
+    ('Maggie', 'Tyrannosaurus', 1);
+INSERT INTO dinosaur
+    (dino_name, dino_species, cage_id)
+VALUES
+    ('Lisa', 'Tyrannosaurus', 1);
+INSERT INTO dinosaur
+    (dino_name, dino_species, cage_id)
+VALUES
+    ('Bart', 'Brachiosaurus', 2);
+INSERT INTO dinosaur
+    (dino_name, dino_species, cage_id)
+VALUES
+    ('Homer', 'Stegosaurus', 2);
+INSERT INTO dinosaur
+    (dino_name, dino_species, cage_id)
+VALUES
+    ('Marge', 'Ankylosaurus', 2);    
