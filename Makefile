@@ -1,10 +1,10 @@
 .PHONY: test
 
-test:
+test: start-local
 	go test -cover -race -v ./...
 
-# lint:
-# 	golangci-lint run -p bugs -p error  
+build:
+	@docker compose -f docker-compose.yml build 
 
 start-local:
 	@docker compose -f docker-compose.yml up -d

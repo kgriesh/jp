@@ -1,20 +1,15 @@
-CREATE TABLE
-if NOT EXISTS dinosaur
-(
-    id SERIAL PRIMARY KEY,
-    name text NOT NULL
+CREATE TABLE IF NOT EXISTS dinosaur (
+    id BIGSERIAL PRIMARY KEY,
+    dino_name text NOT NULL,
+    dino_species text NOT NULL,
+    cage_id bigint NOT NULL
 );
 
---seed
-INSERT INTO dinosaur
-    (name)
-VALUES
-    ('dino one');
-INSERT INTO dinosaur
-    (name)
-VALUES
-    ('dino two');
-INSERT INTO dinosaur
-    (name)
-VALUES
-    ('dino three');
+CREATE TABLE IF NOT EXISTS cage (
+    id BIGSERIAL PRIMARY KEY,
+    cage_name text NOT NULL,
+    cage_status text NOT NULL,
+    UNIQUE ("cage_name" )
+);
+
+ALTER TABLE dinosaur ADD FOREIGN KEY ("cage_id") REFERENCES cage ("id");

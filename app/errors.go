@@ -17,6 +17,7 @@ func (e *ErrorResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	render.Status(r, e.StatusCode)
 	return nil
 }
+
 func BadRequest(err error) *ErrorResponse {
 	return &ErrorResponse{
 		Err:        err,
@@ -25,11 +26,20 @@ func BadRequest(err error) *ErrorResponse {
 		Message:    err.Error(),
 	}
 }
+
 func ServerError(err error) *ErrorResponse {
 	return &ErrorResponse{
 		Err:        err,
 		StatusCode: 500,
 		StatusText: "Internal server error",
 		Message:    err.Error(),
+	}
+}
+
+func NotFound(err error) *ErrorResponse {
+	return &ErrorResponse{
+		Err:        err,
+		StatusCode: 404,
+		StatusText: "Not found",
 	}
 }
